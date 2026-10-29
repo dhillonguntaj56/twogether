@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#6B3234">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Twogether">
+<title>Twogether — Guntaj &amp; Deepika</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --rosewood:#6B3234; --rosewood-deep:#522527; --rosewood-soft:#8A4B4D;
+    --ivory:#FFFBF4; --cream:#F7ECDC; --sand:#F1E2CC;
+    --gold:#C99A68; --gold-soft:#E7CBA3;
+    --ink:#33272A; --ink-soft:#6E5D60; --line:#EBDCC6;
+    --good:#5E7A52; --danger:#B0483E;
+    --card:#FFFFFF;
+    --radius:20px;
+    --shadow:0 6px 20px rgba(82,37,39,.08);
+    --ease:cubic-bezier(.22,.8,.3,1);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    color:var(--ink); background:linear-gradient(180deg,#FBF1E1 0%,var(--ivory) 260px);
+    min-height:100vh;
+  }
+  h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,serif;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  button:active,.pressable:active{transform:scale(.97);}
+  button,.pressable{transition:transform .12s var(--ease), background .15s var(--ease), opacity .15s var(--ease);}
+  input,select,textarea{
+    font-family:inherit; font-size:16px; color:var(--ink);
+    width:100%; padding:13px 14px; border:1.5px solid var(--line); border-radius:14px;
+    background:#FFFDF8; outline:none; min-width:0;
+  }
+  input:focus,select:focus,textarea:focus{border-color:var(--gold); background:#fff;}
+  textarea{resize:vertical; min-height:76px;}
+  label{display:block; font-size:12.5px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 6px 2px;}
+  .field{margin-bottom:12px; min-width:0;}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .field-row>*{min-width:0;}
+
+  .shell{max-width:480px; margin:0 auto; padding:0 16px 120px;}
+  .hidden{display:none !important;}
+
+  @keyframes screenIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+  .screen-in{animation:screenIn .24s var(--ease) both;}
+  @keyframes formIn{from{opacity:0; transform:translateY(-6px);} to{opacity:1; transform:translateY(0);}}
+  .form-in{animation:formIn .24s var(--ease) both;}
+  @media (prefers-reduced-motion:reduce){
+    .screen-in,.form-in{animation:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:7px;
+    min-height:46px; padding:12px 20px; border-radius:999px;
+    font-size:15px; font-weight:600; white-space:nowrap;
+  }
+  .btn-primary{background:var(--rosewood); color:#FFF7EA; box-shadow:var(--shadow);}
+  .btn-primary:hover{background:var(--rosewood-deep);}
+  .btn-gold{background:var(--gold); color:#3D2A18;}
+  .btn-ghost{background:#fff; border:1.5px solid var(--line); color:var(--rosewood);}
+  .btn-block{width:100%;}
+  .btn-small{min-height:38px; padding:8px 15px; font-size:13.5px;}
+  .btn-danger-ghost{background:#FDF0EE; color:var(--danger); border:1.5px solid #F2D5D0;}
+  .icon-btn{
+    width:38px; height:38px; flex:0 0 auto; border-radius:12px; display:inline-flex;
+    align-items:center; justify-content:center; background:#FBF3E6; color:var(--rosewood); font-size:16px;
+  }
+
+  /* ---------- Cards ---------- */
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); margin-bottom:14px;}
+  .card h3{margin:0 0 4px; font-size:20px; color:var(--rosewood-deep);}
+  .muted{color:var(--ink-soft); font-size:14px; line-height:1.5;}
+  .section-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:22px 2px 12px;}
+  .section-head h2{margin:0; font-size:25px; color:var(--rosewood-deep); min-width:0;}
+  .section-head .btn{flex:0 0 auto;}
+
+  .empty{
+    text-align:center; padding:16px 16px; border:1.5px dashed var(--gold-soft);
+    border-radius:var(--radius); background:#FFFEF9; margin-bottom:14px;
+  }
+  .empty .empty-icon{font-size:30px; display:block; margin-bottom:8px;}
+  .empty p{margin:0; color:var(--ink-soft); font-size:14.5px; line-height:1.55;}
+
+  /* ---------- Welcome / auth ---------- */
+  .welcome-hero{text-align:center; padding:52px 10px 10px;}
+  .welcome-hero .mark{
+    width:92px; height:92px; margin:0 auto 16px; border-radius:28px;
+    background:var(--rosewood); display:flex; align-items:center; justify-content:center;
+    box-shadow:0 12px 28px rgba(82,37,39,.22);
+  }
+  .welcome-hero .mark svg{width:58px; height:58px;}
+  .welcome-hero h1{font-size:40px; margin:0 0 6px; color:var(--rosewood-deep); font-weight:700;}
+  .welcome-hero p{margin:0; color:var(--ink-soft); font-size:15px; line-height:1.6;}
+  .auth-tabs{display:flex; background:var(--cream); border-radius:999px; padding:4px; margin:22px 0 18px;}
+  .auth-tabs button{flex:1; min-height:42px; border-radius:999px; font-weight:600; font-size:14.5px; color:var(--ink-soft);}
+  .auth-tabs button.active{background:#fff; color:var(--rosewood); box-shadow:0 2px 8px rgba(82,37,39,.10);}
+  .setup-banner{
+    background:#FBEBD9; border:1px solid var(--gold-soft); color:#7A5326;
+    border-radius:14px; padding:12px 14px; font-size:13.5px; line-height:1.5; margin-bottom:14px;
+  }
+
+  /* ---------- App header / hero ---------- */
+  .app-hero{
+    margin:14px -16px 0; padding:26px 20px 20px; border-radius:0 0 28px 28px;
+    background:linear-gradient(150deg,var(--rosewood) 0%,var(--rosewood-deep) 78%);
+    color:#FFF4E2;
+  }
+  .app-hero .brand-row{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .app-hero .brand{font-family:'Playfair Display',serif; font-size:24px; font-weight:700; letter-spacing:.01em;}
+  .avatars{display:flex; align-items:center; flex:0 0 auto;}
+  .gear-btn{width:38px; height:38px; border-radius:50%; border:1px solid rgba(255,255,255,.45); background:rgba(255,255,255,.16); color:#FFF7E8; display:flex; align-items:center; justify-content:center; cursor:pointer; flex:0 0 auto;}
+  .avatar{
+    width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:15px; border:2px solid rgba(255,244,226,.85); background:var(--gold); color:#3D2A18;
+  }
+  .avatar + .avatar{margin-left:-9px; background:#EAD9BE;}
+  .space-switcher{display:flex; gap:8px; margin-top:18px; background:rgba(255,247,234,.13); padding:4px; border-radius:999px;}
+  .space-switcher button{
+    flex:1; min-height:40px; border-radius:999px; font-weight:600; font-size:14.5px; color:#F6E7CF; min-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:0 6px;
+  }
+  .space-switcher button.active{background:#FFF7EA; color:var(--rosewood-deep); box-shadow:0 2px 8px rgba(0,0,0,.16);}
+  .private-banner{
+    margin-top:14px; background:#FFF3DC; border:1px solid var(--gold-soft); color:#7A5326;
+    border-radius:14px; padding:11px 14px; font-size:13.5px; line-height:1.5;
+  }
+
+  /* ---------- Today ---------- */
+  .greeting{margin:22px 2px 2px; font-size:29px; color:var(--rosewood-deep);}
+  .today-date{margin:0 2px 14px; color:var(--ink-soft); font-size:14px;}
+  .countdown-card{
+    background:linear-gradient(140deg,#7C3F41,#5C2A2C); color:#FFF3DE; border:none; text-align:center; padding:24px 18px;
+  }
+  .countdown-card .cd-num{font-family:'Playfair Display',serif; font-size:58px; font-weight:700; line-height:1;}
+  .countdown-card .cd-label{font-size:14px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-soft); margin-top:6px;}
+  .countdown-card .cd-sub{font-size:14.5px; margin-top:10px; color:#F8E9D2;}
+  .stats-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px;}
+  .stat-card{background:#fff; border:1px solid var(--line); border-radius:18px; padding:14px 10px; text-align:center; box-shadow:var(--shadow); min-width:0;}
+  .stat-card .stat-num{font-family:'Playfair Display',serif; font-size:21px; font-weight:700; color:var(--rosewood); overflow:hidden; text-overflow:ellipsis;}
+  .stat-card .stat-label{font-size:11.5px; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:var(--ink-soft); margin-top:3px; line-height:1.35;}
+  .preview-row{display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid #F4E8D3;}
+  .preview-row:last-child{border-bottom:none; padding-bottom:2px;}
+  .preview-date{
+    flex:0 0 auto; width:48px; text-align:center; background:var(--cream); border-radius:12px; padding:6px 2px;
+    color:var(--rosewood); font-weight:700; font-size:13px; line-height:1.25;
+  }
+  .preview-main{min-width:0; flex:1;}
+  .preview-main .t{font-weight:600; font-size:15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .preview-main .s{font-size:13px; color:var(--ink-soft);}
+
+  /* ---------- Rows / lists ---------- */
+  .row-card{
+    display:flex; align-items:center; gap:12px; background:#fff; border:1px solid var(--line);
+    border-radius:18px; padding:14px 15px; margin-bottom:10px; box-shadow:var(--shadow);
+  }
+  .row-main{flex:1; min-width:0;}
+  .row-title{font-weight:600; font-size:15.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .row-sub{font-size:13px; color:var(--ink-soft); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .row-amount{font-family:'Playfair Display',serif; font-weight:700; font-size:18px; color:var(--rosewood); flex:0 0 auto;}
+  .badge{
+    display:inline-block; padding:2px 9px; border-radius:999px; font-size:11.5px; font-weight:600;
+    background:var(--cream); color:var(--rosewood); vertical-align:1px;
+  }
+  .badge-done{background:#E4EDDC; color:var(--good);}
+  .check-btn{
+    width:42px; height:42px; flex:0 0 auto; border-radius:50%; border:2px solid var(--gold-soft);
+    display:flex; align-items:center; justify-content:center; font-size:18px; color:transparent; background:#FFFDF8;
+  }
+  .check-btn.done{background:var(--good); border-color:var(--good); color:#fff;}
+  .note-body{white-space:pre-wrap; word-break:break-word; font-size:14.5px; line-height:1.55; color:var(--ink); margin-top:4px;}
+
+  .progress-track{height:9px; border-radius:99px; background:var(--cream); overflow:hidden; margin-top:9px;}
+  .progress-fill{height:100%; border-radius:99px; background:linear-gradient(90deg,var(--gold),var(--rosewood-soft)); transition:width .35s var(--ease);}
+
+  .list-card{cursor:pointer;}
+  .list-card .row-title{font-size:17px; font-family:'Playfair Display',serif; color:var(--rosewood-deep);}
+
+  /* ---------- Timeline ---------- */
+  .timeline{position:relative; margin-left:8px; padding-left:26px;}
+  .timeline::before{content:""; position:absolute; left:6px; top:8px; bottom:8px; width:2px; background:var(--sand); border-radius:2px;}
+  .timeline-item{position:relative; margin-bottom:12px;}
+  .timeline-item::before{
+    content:""; position:absolute; left:-26px; top:18px; width:14px; height:14px; border-radius:50%;
+    background:var(--gold); border:3px solid var(--ivory); box-shadow:0 0 0 1.5px var(--gold-soft);
+  }
+
+  /* ---------- Segmented toggle ---------- */
+  .segmented{display:flex; gap:8px;}
+  .segmented button{
+    flex:1; min-height:44px; border-radius:14px; border:1.5px solid var(--line); background:#FFFDF8;
+    font-weight:600; font-size:14.5px; color:var(--ink-soft); padding:0 8px;
+  }
+  .segmented button.active{background:var(--rosewood); border-color:var(--rosewood); color:#FFF7EA;}
+
+  /* ---------- Bottom nav ---------- */
+  .bottom-nav{
+    position:fixed; left:50%; transform:translateX(-50%); bottom:calc(14px + env(safe-area-inset-bottom));
+    width:min(448px, calc(100% - 24px)); z-index:50;
+    background:rgba(255,253,248,.97); border:1px solid var(--line); border-radius:26px;
+    box-shadow:0 12px 32px rgba(82,37,39,.16); display:flex; padding:8px;
+  }
+  .bottom-nav button{
+    flex:1; min-width:0; min-height:54px; border-radius:19px; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:2px; color:var(--ink-soft); font-size:11px; font-weight:600;
+  }
+  .bottom-nav button svg{width:22px; height:22px;}
+  .bottom-nav button.active{background:var(--rosewood); color:#FFF7EA;}
+
+  /* ---------- Toast / misc ---------- */
+  .toast{
+    position:fixed; left:50%; transform:translateX(-50%) translateY(20px); bottom:104px; z-index:80;
+    background:var(--rosewood-deep); color:#FFF3DE; padding:12px 18px; border-radius:999px;
+    font-size:14px; font-weight:500; opacity:0; pointer-events:none; transition:opacity .25s var(--ease), transform .25s var(--ease);
+    max-width:calc(100% - 40px); text-align:center; box-shadow:0 10px 26px rgba(0,0,0,.22);
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .form-error{background:#FDF0EE; border:1px solid #F2D5D0; color:var(--danger); border-radius:12px; padding:10px 13px; font-size:13.5px; margin-bottom:12px; line-height:1.5;}
+  .loading{text-align:center; color:var(--ink-soft); padding:36px 0; font-size:15px;}
+  .invite-code{
+    font-family:'Playfair Display',serif; font-size:19px; letter-spacing:.16em; font-weight:700;
+    color:var(--rosewood); text-align:center; padding:2px 0;
+  }
+  .goal-add-row{display:flex; gap:8px; margin-top:11px;}
+  .goal-add-row input{flex:1;}
+  .divider{height:1px; background:var(--line); margin:20px 0;}
+  .small-note{font-size:13px; color:var(--ink-soft); line-height:1.55;}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ================= WELCOME / AUTH ================= -->
+  <section id="authView">
+    <div class="welcome-hero">
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 512 512" fill="none"><path d="M256 372c-8-6-128-84-128-168 0-44 32-76 72-76 28 0 48 16 56 34 8-18 28-34 56-34 40 0 72 32 72 76 0 84-120 162-128 168z" fill="#FFF6EA"/><circle cx="256" cy="238" r="14" fill="#C99A68"/></svg>
+      </div>
+      <h1>Twogether</h1>
+      <p>One beautiful place for everything you two<br>share — money, lists, plans &amp; the little things.</p>
+    </div>
+
+    <div id="setupBanner" class="setup-banner hidden">Twogether is almost ready — the secure connection is still being finished, so signing in opens shortly. Everything you see here is the real app, ready to go.</div>
+
+    <div class="card">
+      <div class="auth-tabs" role="tablist">
+        <button id="tabSignIn" class="active" type="button">Sign in</button>
+        <button id="tabSignUp" type="button">Create account</button>
+      </div>
+      <div id="authError" class="form-error hidden"></div>
+      <form id="authForm" autocomplete="on">
+        <div class="field" id="displayNameField">
+          <label for="authName">Your name</label>
+          <input id="authName" type="text" placeholder="Guntaj or Deepika" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="authEmail">Email</label>
+          <input id="authEmail" type="email" placeholder="you@example.com" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="authPassword">Password</label>
+          <input id="authPassword" type="password" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+        <button class="btn btn-primary btn-block" id="authSubmit" type="submit">Sign in</button>
+      </form>
+      <p class="small-note" style="text-align:center; margin:14px 0 0;">Private to just the two of you. Your own space stays yours — the shared space is for both.</p>
+    </div>
+  </section>
+
+  <!-- ================= HOUSEHOLD SETUP ================= -->
+  <section id="householdView" class="hidden">
+    <div class="welcome-hero" style="padding-top:38px;">
+      <h1 style="font-size:33px;">Set up your home</h1>
+      <p>Create your household, then share the invite<br>code with your partner so they can join.</p>
+    </div>
+    <div id="hhSetupError" class="form-error hidden"></div>
+    <div class="card">
+      <h3>Create our household</h3>
+      <p class="muted" style="margin:0 0 14px;">You’ll get a private invite code to share.</p>
+      <div class="field">
+        <label for="hhNameInput">Household name</label>
+        <input id="hhNameInput" type="text" value="Guntaj &amp; Deepika">
+      </div>
+      <button class="btn btn-primary btn-block" id="createHhBtn" type="button">Create our household</button>
+    </div>
+    <div class="card">
+      <h3>Join with invite code</h3>
+      <p class="muted" style="margin:0 0 14px;">Your partner already created it? Enter their 6-character code.</p>
+      <form id="joinForm">
+        <div class="field">
+          <label for="joinCodeInput">Invite code</label>
+          <input id="joinCodeInput" type="text" maxlength="6" placeholder="ABC123" style="text-transform:uppercase; letter-spacing:.18em; text-align:center; font-weight:700;" autocomplete="off">
+        </div>
+        <button class="btn btn-gold btn-block" type="submit">Join household</button>
+      </form>
+    </div>
+    <button class="btn btn-ghost btn-block" id="setupSignOutBtn" type="button">Sign out</button>
+  </section>
+
+  <!-- ================= MAIN APP ================= -->
+  <section id="appView" class="hidden">
+    <div class="app-hero">
+      <div class="brand-row">
+        <div class="brand">Twogether</div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="avatars" aria-hidden="true">
+            <div class="avatar">G</div>
+            <div class="avatar">D</div>
+          </div>
+          <button type="button" id="settingsBtn" class="gear-btn pressable" aria-label="Settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px; display:block;"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h0a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55h0a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v0a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="space-switcher" id="spaceSwitcher" role="tablist" aria-label="Choose a space">
+        <button type="button" data-space="Ours" class="active">Ours</button>
+        <button type="button" data-space="Guntaj">Guntaj</button>
+        <button type="button" data-space="Deepika">Deepika</button>
+      </div>
+    </div>
+
+    <div id="privateBanner" class="private-banner hidden"></div>
+    <div id="appLoading" class="loading hidden">Loading your life together…</div>
+
+    <main id="appMain">
+      <!-- ===== TODAY ===== -->
+      <div class="tab-panel" id="panel-today">
+        <h2 class="greeting" id="todayGreeting">Hello</h2>
+        <p class="today-date" id="todayDate"></p>
+
+        <div class="card countdown-card">
+          <div class="cd-num" id="countdownDays">—</div>
+          <div class="cd-label" id="countdownLabel">days to go</div>
+          <div class="cd-sub">Until your wedding day · 18 January 2027 💍</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-num" id="statSpending">$0</div><div class="stat-label">Shared spending this month</div></div>
+          <div class="stat-card"><div class="stat-num" id="statReminders">0</div><div class="stat-label">Open reminders</div></div>
+          <div class="stat-card"><div class="stat-num" id="statGoals">0</div><div class="stat-label">Active goals</div></div>
+        </div>
+
+        <div class="section-head"><h2>Coming up</h2><button class="btn btn-ghost btn-small pressable" type="button" data-goto="plans">All plans</button></div>
+        <div class="card" id="todayEvents"><p class="muted" style="margin:0;">Nothing planned yet.</p></div>
+
+        <div class="section-head"><h2>Reminders due</h2><button class="btn btn-ghost btn-small pressable" type="button" data-goto="plans">All reminders</button></div>
+        <div class="card" id="todayReminders"><p class="muted" style="margin:0;">Nothing due. Enjoy the calm.</p></div>
+      </div>
+
+      <!-- ===== MONEY ===== -->
+      <div class="tab-panel hidden" id="panel-money">
+        <div class="section-head"><h2>Money</h2><button class="btn btn-primary btn-small" type="button" id="toggleExpenseForm">+ Add expense</button></div>
+
+        <form id="expenseForm" class="card form-in hidden">
+          <div id="expenseError" class="form-error hidden"></div>
+          <div class="field"><label for="expTitle">What was it?</label><input id="expTitle" type="text" placeholder="Groceries, dinner out, fuel…" required></div>
+          <div class="field-row">
+            <div class="field"><label for="expAmount">Amount ($)</label><input id="expAmount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required></div>
+            <div class="field"><label for="expDate">Date</label><input id="expDate" type="date" required></div>
+          </div>
+          <div class="field"><label>Paid by</label>
+            <div class="segmented" id="paidByToggle">
+              <button type="button" data-name="Guntaj" class="active">Guntaj</button>
+              <button type="button" data-name="Deepika">Deepika</button>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Save expense</button>
+        </form>
+
+        <div class="card" style="text-align:center;">
+          <div class="muted" id="monthLabel">This month</div>
+          <div style="font-family:'Playfair Display',serif; font-size:38px; font-weight:700; color:var(--rosewood);" id="monthTotal">$0.00</div>
+          <div class="muted" id="monthCount"></div>
+        </div>
+
+        <div class="card hidden" id="settleCard">
+          <h3>Settle up</h3>
+          <div id="settleBody" class="muted"></div>
+        </div>
+
+        <div id="expenseList"></div>
+
+<div class="section-head"><h2>Goals</h2><button class="btn btn-primary btn-small" type="button" id="toggleGoalForm">+ Add</button></div>
+        <form id="goalForm" class="card form-in hidden">
+          <div class="field"><label for="goalTitle">Goal</label><input id="goalTitle" type="text" placeholder="New home, trip, car…" required></div>
+          <div class="field"><label for="goalTarget">Target ($)</label><input id="goalTarget" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required></div>
+          <button class="btn btn-primary btn-block" type="submit">Save goal</button>
+        </form>
+        <div id="goalList"></div>
+      </div>
+
+      <!-- ===== LISTS ===== -->
+      <div class="tab-panel hidden" id="panel-lists">
+        <div id="listsHome">
+          <div class="section-head"><h2>Lists</h2><button class="btn btn-primary btn-small" type="button" id="toggleListForm">+ New list</button></div>
+          <form id="listForm" class="card form-in hidden">
+            <div class="field"><label for="listTitle">List name</label><input id="listTitle" type="text" placeholder="Groceries, Wedding shopping, Home…" required></div>
+            <button class="btn btn-primary btn-block" type="submit">Create list</button>
+          </form>
+          <div id="listsWrap"></div>
+        </div>
+
+        <div id="listDetail" class="hidden">
+          <div class="section-head">
+            <button class="btn btn-ghost btn-small" type="button" id="listBackBtn">← All lists</button>
+            <button class="btn btn-danger-ghost btn-small" type="button" id="deleteListBtn">Delete list</button>
+          </div>
+          <div class="card">
+            <h3 id="detailTitle">List</h3>
+            <div class="muted" id="detailProgressLabel"></div>
+            <div class="progress-track"><div class="progress-fill" id="detailProgressFill" style="width:0%"></div></div>
+          </div>
+          <form id="listItemForm" class="card">
+            <div class="field" style="margin-bottom:10px;"><label for="listItemTitle">Add an item</label><input id="listItemTitle" type="text" placeholder="Type and add…" required></div>
+            <button class="btn btn-gold btn-block" type="submit">Add item</button>
+          </form>
+          <div id="detailItems"></div>
+        </div>
+      </div>
+
+      <!-- ===== PLANS ===== -->
+      <div class="tab-panel hidden" id="panel-plans">
+        <div class="section-head"><h2>Plans</h2><button class="btn btn-primary btn-small" type="button" id="toggleEventForm">+ Add plan</button></div>
+        <form id="eventForm" class="card form-in hidden">
+          <div class="field"><label for="evTitle">What’s happening?</label><input id="evTitle" type="text" placeholder="Dinner, appointment, trip…" required></div>
+          <div class="field-row">
+            <div class="field"><label for="evDate">Date</label><input id="evDate" type="date" required></div>
+            <div class="field"><label for="evTime">Time (optional)</label><input id="evTime" type="time"></div>
+          </div>
+          <div class="field"><label for="evNote">Note (optional)</label><input id="evNote" type="text" placeholder="Anything to remember"></div>
+          <button class="btn btn-primary btn-block" type="submit">Save plan</button>
+        </form>
+        <div class="timeline" id="eventList"></div>
+
+<div class="section-head"><h2>Reminders</h2><button class="btn btn-primary btn-small" type="button" id="toggleReminderForm">+ Add</button></div>
+        <form id="reminderForm" class="card form-in hidden">
+          <div class="field"><label for="remTitle">Remind us about</label><input id="remTitle" type="text" placeholder="Pay the bill, renew, book…" required></div>
+          <div class="field-row">
+            <div class="field"><label for="remDate">Due date</label><input id="remDate" type="date" required></div>
+            <div class="field"><label for="remKind">Type</label>
+              <select id="remKind">
+                <option value="General">General</option>
+                <option value="Bill">Bill</option>
+                <option value="Birthday">Birthday</option>
+                <option value="Renewal">Renewal</option>
+                <option value="Appointment">Appointment</option>
+                <option value="Health">Health</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Save reminder</button>
+        </form>
+        <div id="reminderList"></div>
+      </div>
+
+      <!-- ===== MORE ===== -->
+        <!-- ===== NOTES ===== -->
+      <div class="tab-panel hidden" id="panel-notes">
+<div class="section-head"><h2>Notes</h2><button class="btn btn-primary btn-small" type="button" id="toggleNoteForm">+ Add</button></div>
+        <form id="noteForm" class="card form-in hidden">
+          <div class="field"><label for="noteTitle">Title</label><input id="noteTitle" type="text" placeholder="Sizes, favourites, little things…" required></div>
+          <div class="field"><label for="noteBody">Note</label><textarea id="noteBody" placeholder="Write it down so neither of you has to remember it."></textarea></div>
+          <button class="btn btn-primary btn-block" type="submit">Save note</button>
+        </form>
+        <div id="noteList"></div>
+
+<div class="section-head"><h2>Documents</h2><button class="btn btn-primary btn-small" type="button" id="toggleDocForm">+ Upload</button></div>
+        <p class="muted" style="margin:0 0 10px;">Important PDFs and photos, kept safe together — passports, papers, certificates, anything you can't afford to lose.</p>
+        <form id="docForm" class="card form-in hidden">
+          <div class="field"><label for="docFile">Choose a PDF or image</label><input id="docFile" type="file" accept="application/pdf,image/*"></div>
+          <div class="small-note" id="docError" style="min-height:16px;"></div>
+          <button class="btn btn-primary btn-block" type="submit" id="docUploadBtn">Upload document</button>
+        </form>
+        <div id="docList"></div>
+      </div>
+
+      <!-- ===== SETTINGS ===== -->
+      <div class="tab-panel hidden" id="panel-settings">
+<div class="section-head"><h2>Settings</h2></div>
+        <div class="card" style="padding:13px 15px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="flex:1; min-width:0;">
+              <h3 id="hhName" style="font-size:18px; margin:0;">Our household</h3>
+              <div id="hhMembers" class="muted" style="font-size:13.5px; margin-top:1px;"></div>
+            </div>
+            <button class="btn btn-ghost btn-small" type="button" id="signOutBtn" style="flex:0 0 auto;">Sign out</button>
+          </div>
+          <div style="display:flex; align-items:center; gap:9px; margin-top:9px; flex-wrap:wrap;">
+            <span class="muted" style="font-size:13px;">Invite code</span>
+            <span class="invite-code" id="hhCode" style="padding:0; text-align:left;">······</span>
+            <button class="btn btn-gold btn-small" type="button" id="copyCodeBtn">Copy</button>
+            <span class="small-note" id="copyFeedback"></span>
+          </div>
+        </div>
+        <p class="small-note" style="text-align:center; margin-top:14px;">Twogether · your life, together 🌿</p>
+      </div>
+    </main>
+  </section>
+</div>
+
+<!-- ================= BOTTOM NAV ================= -->
+<nav class="bottom-nav hidden" id="bottomNav" aria-label="Main">
+  <button type="button" data-tab="today" class="active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></svg>
+    Today
+  </button>
+  <button type="button" data-tab="money">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.2h.01M18 14.8h.01"/></svg>
+    Money
+  </button>
+  <button type="button" data-tab="lists">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 6h12M8.5 12h12M8.5 18h12"/><path d="m3.5 6 1.2 1.2L7 4.9M3.5 12l1.2 1.2L7 10.9M3.5 18l1.2 1.2L7 16.9"/></svg>
+    Lists
+  </button>
+  <button type="button" data-tab="plans">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+    Plans
+  </button>
+  <button type="button" data-tab="notes">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h9L19.5 8v12.5h-13.5z"/><path d="M14.5 3.5v5h5"/><path d="M9 12.5h6M9 16h6"/></svg>
+    Notes
+  </button>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+/* ================= Config (placeholders replaced at deploy time) ================= */
+const SUPABASE_URL = "https://zuckhpyfaxoblugqqzsm.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1Y2tocHlmYXhvYmx1Z3FxenNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5NTQ4OTgsImV4cCI6MjEwODUzMDg5OH0.xy5M3a_o6WJV22aLJ35IUk6f0nP650qy2vexd-0EVXY";
+
+/* Build stamp — bump on every deploy. The app compares its own stamp against
+   the live site's and reloads itself when a newer build exists, because iPhone
+   home-screen apps otherwise keep showing the frozen old copy. */
+const APP_BUILD = "2026-10-28.5";
+
+const isConfigured = !SUPABASE_URL.startsWith("__") && !SUPABASE_ANON_KEY.startsWith("__");
+let sb = null;
+if (isConfigured) {
+  try { sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: "twogether-auth-v1", storage: window.localStorage } }); } catch (e) { sb = null; }
+}
+
+/* ================= Helpers ================= */
+const $ = (id) => document.getElementById(id);
+const PEOPLE = ["Guntaj", "Deepika"];
+const WEDDING_DATE = new Date(2027, 0, 18); // 18 January 2027
+
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function money(n) {
+  const v = Number(n) || 0;
+  return "$" + v.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function todayISO() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function fmtDate(iso) {
+  if (!iso) return "";
+  const d = new Date(String(iso).slice(0, 10) + "T12:00:00");
+  if (isNaN(d)) return String(iso);
+  return d.toLocaleDateString("en-CA", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+}
+function fmtDateShort(iso) {
+  if (!iso) return "";
+  const d = new Date(String(iso).slice(0, 10) + "T12:00:00");
+  if (isNaN(d)) return String(iso);
+  return d.toLocaleDateString("en-CA", { month: "short", day: "numeric" });
+}
+function fmtTime(t) {
+  if (!t) return "";
+  const parts = String(t).split(":");
+  const d = new Date();
+  d.setHours(Number(parts[0]) || 0, Number(parts[1]) || 0, 0, 0);
+  return d.toLocaleTimeString("en-CA", { hour: "numeric", minute: "2-digit" });
+}
+function dayBadge(iso) {
+  const d = new Date(String(iso).slice(0, 10) + "T12:00:00");
+  if (isNaN(d)) return "—<br>—";
+  return d.toLocaleDateString("en-CA", { month: "short" }) + "<br>" + d.getDate();
+}
+let toastTimer = null;
+function toast(msg) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+}
+function makeInviteCode() {
+  const alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  let code = "";
+  const arr = new Uint32Array(6);
+  if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(arr);
+  for (let i = 0; i < 6; i++) code += alphabet[(arr[i] || Math.floor(Math.random() * 31)) % alphabet.length];
+  return code;
+}
+function emptyState(icon, text) {
+  return '<div class="empty"><span class="empty-icon">' + icon + '</span><p>' + esc(text) + "</p></div>";
+}
+
+/* ================= State ================= */
+let currentUser = null;
+let myDisplayName = "";
+let household = null;
+let members = [];
+let currentSpace = "Ours"; // 'Ours' | 'Guntaj' | 'Deepika'
+let currentTab = "today";
+let selectedPaidBy = "Guntaj";
+let openList = null; // list row currently open in detail view
+let realtimeChannel = null;
+let refreshing = false;
+
+const data = { expenses: [], lists: [], listItems: [], events: [], reminders: [], notes: [], goals: [], documents: [] };
+const todayData = { sharedMonthSpend: 0, openReminders: 0, activeGoals: 0, events: [], reminders: [] };
+
+/* ================= Space logic ================= */
+function memberIdFor(person) {
+  // Match on first name (or any word of the stored name), so "Deepika Behal"
+  // still counts as Deepika — exact full-name matching wrongly showed partners
+  // who joined with a surname as "hasn’t joined yet".
+  const want = person.trim().toLowerCase();
+  const m = members.find((x) => {
+    const words = String(x.display_name || "").trim().toLowerCase().split(/\s+/).filter(Boolean);
+    return words[0] === want || words.includes(want);
+  });
+  return m ? m.user_id : null;
+}
+function myMember() {
+  return members.find((x) => x.user_id === (currentUser && currentUser.id)) || null;
+}
+function spaceOwnerId() {
+  if (currentSpace === "Ours") return null;
+  return memberIdFor(currentSpace);
+}
+function isPartnerSpace() {
+  if (currentSpace === "Ours" || !currentUser) return false;
+  const owner = spaceOwnerId();
+  return owner !== null && owner !== currentUser.id;
+}
+function isUnknownPersonSpace() {
+  // Space belongs to a person who has not joined yet: nothing can be shown/added.
+  return currentSpace !== "Ours" && spaceOwnerId() === null;
+}
+/* The visibility/owner pair to stamp on a new item created in the current space. Null = cannot create here. */
+function newItemSpace() {
+  if (currentSpace === "Ours") return { visibility: "shared", owner_id: null };
+  const owner = spaceOwnerId();
+  if (owner && currentUser && owner === currentUser.id) return { visibility: "private", owner_id: currentUser.id };
+  return null;
+}
+function applySpaceFilter(query) {
+  if (currentSpace === "Ours") return query.eq("visibility", "shared");
+  const owner = spaceOwnerId();
+  if (!owner) return query.eq("id", "00000000-0000-0000-0000-000000000000"); // matches nothing
+  return query.eq("visibility", "private").eq("owner_id", owner);
+}
+
+/* ================= View switching ================= */
+function showView(name) {
+  ["authView", "householdView", "appView"].forEach((v) => $(v).classList.toggle("hidden", v !== name));
+  $("bottomNav").classList.toggle("hidden", name !== "appView");
+  if (name === "appView") {
+    const main = $("appMain");
+    main.classList.remove("screen-in");
+    void main.offsetWidth;
+    main.classList.add("screen-in");
+  }
+  window.scrollTo({ top: 0 });
+}
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll(".tab-panel").forEach((p) => p.classList.add("hidden"));
+  const panel = $("panel-" + tab);
+  panel.classList.remove("hidden");
+  panel.classList.remove("screen-in");
+  void panel.offsetWidth;
+  panel.classList.add("screen-in");
+  document.querySelectorAll("#bottomNav button").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
+  window.scrollTo({ top: 0 });
+  if (household) refreshAll();
+}
+function switchSpace(space) {
+  currentSpace = space;
+  document.querySelectorAll("#spaceSwitcher button").forEach((b) => b.classList.toggle("active", b.dataset.space === space));
+  openList = null;
+  renderPrivateBanner();
+  if (household) refreshAll();
+}
+function renderPrivateBanner() {
+  const banner = $("privateBanner");
+  if (isPartnerSpace()) {
+    banner.textContent = "🔒 This is " + currentSpace + "’s private space. Only " + currentSpace + " can see what’s here — your shared life together lives in Ours.";
+    banner.classList.remove("hidden");
+  } else if (isUnknownPersonSpace()) {
+    banner.textContent = "🌱 " + currentSpace + " hasn’t joined this household yet. Once they join with the invite code, their private space will be theirs alone.";
+    banner.classList.remove("hidden");
+  } else {
+    banner.classList.add("hidden");
+  }
+}
+
+/* ================= Auth ================= */
+let authMode = "signin"; // 'signin' | 'signup'
+function setAuthMode(mode) {
+  authMode = mode;
+  $("tabSignIn").classList.toggle("active", mode === "signin");
+  $("tabSignUp").classList.toggle("active", mode === "signup");
+  $("authSubmit").textContent = mode === "signin" ? "Sign in" : "Create account";
+  $("authPassword").setAttribute("autocomplete", mode === "signin" ? "current-password" : "new-password");
+  $("displayNameField").style.display = mode === "signup" ? "" : "none";
+  $("authError").classList.add("hidden");
+}
+function authError(msg) {
+  const el = $("authError");
+  el.textContent = msg;
+  el.classList.remove("hidden");
+}
+function requireBackend() {
+  if (sb) return true;
+  authError("The secure connection is still being finished — signing in opens very shortly. Thank you for your patience.");
+  return false;
+}
+
+$("tabSignIn").addEventListener("click", () => setAuthMode("signin"));
+$("tabSignUp").addEventListener("click", () => setAuthMode("signup"));
+
+$("authForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!requireBackend()) return;
+  const email = $("authEmail").value.trim();
+  const password = $("authPassword").value;
+  $("authSubmit").disabled = true;
+  try {
+    if (authMode === "signup") {
+      const name = $("authName").value.trim();
+      if (!name) { authError("Please add your name — Guntaj or Deepika — so your space is yours."); return; }
+      const { data: res, error } = await sb.auth.signUp({
+        email, password,
+        options: { data: { display_name: name } }
+      });
+      if (error) { authError(error.message); return; }
+      if (!res.session) {
+        authError("Account created. Please check your email to confirm, then sign in.");
+        setAuthMode("signin");
+        return;
+      }
+      await afterSignIn(res.user);
+    } else {
+      const { data: res, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) { authError(error.message); return; }
+      await afterSignIn(res.user);
+    }
+  } catch (err) {
+    authError("Something went wrong. Please check your connection and try again.");
+  } finally {
+    $("authSubmit").disabled = false;
+  }
+});
+
+async function afterSignIn(user) {
+  currentUser = user;
+  myDisplayName = (user.user_metadata && user.user_metadata.display_name) || "";
+  await loadMembership();
+  if (household) {
+    enterApp();
+  } else {
+    if (!myDisplayName) myDisplayName = "";
+    showView("householdView");
+  }
+}
+
+async function loadMembership() {
+  household = null; members = [];
+  if (!sb || !currentUser) return;
+  const { data: myRows } = await sb.from("household_members").select("*").eq("user_id", currentUser.id).limit(1);
+  if (!myRows || !myRows.length) return;
+  const myRow = myRows[0];
+  if (!myDisplayName && myRow.display_name) myDisplayName = myRow.display_name;
+  const { data: hh } = await sb.from("households").select("*").eq("id", myRow.household_id).single();
+  if (!hh) return;
+  household = hh;
+  const { data: mems } = await sb.from("household_members").select("*").eq("household_id", household.id);
+  members = mems || [];
+}
+
+/* ================= Household setup ================= */
+function hhSetupError(msg) {
+  const el = $("hhSetupError");
+  el.textContent = msg;
+  el.classList.remove("hidden");
+  setTimeout(() => el.classList.add("hidden"), 6000);
+}
+
+$("createHhBtn").addEventListener("click", async () => {
+  if (!sb || !currentUser) return;
+  const name = $("hhNameInput").value.trim() || "Guntaj & Deepika";
+  const displayName = myDisplayName || ((currentUser.email || "Me").split("@")[0]);
+  $("createHhBtn").disabled = true;
+  try {
+    let created = null;
+    for (let attempt = 0; attempt < 4 && !created; attempt++) {
+      const code = makeInviteCode();
+      const { data: hh, error } = await sb.from("households")
+        .insert({ name, invite_code: code, created_by: currentUser.id })
+        .select().single();
+      if (!error && hh) created = hh;
+      else if (error && !/duplicate|unique/i.test(error.message || "")) { hhSetupError(error.message); return; }
+    }
+    if (!created) { hhSetupError("Could not create the household. Please try once more."); return; }
+    const { error: memErr } = await sb.from("household_members")
+      .insert({ household_id: created.id, user_id: currentUser.id, display_name: displayName });
+    if (memErr) { hhSetupError(memErr.message); return; }
+    myDisplayName = displayName;
+    await loadMembership();
+    enterApp();
+    toast("Welcome home 🏡 Share your invite code with your partner.");
+  } finally {
+    $("createHhBtn").disabled = false;
+  }
+});
+
+$("joinForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!sb || !currentUser) return;
+  const code = $("joinCodeInput").value.trim().toUpperCase();
+  if (code.length !== 6) { hhSetupError("The invite code is 6 characters — please check it and try again."); return; }
+  const displayName = myDisplayName || ((currentUser.email || "Me").split("@")[0]);
+  const { data: hh, error } = await sb.from("households").select("*").eq("invite_code", code).single();
+  if (error || !hh) { hhSetupError("That code didn’t match a household. Please check it and try again."); return; }
+  const { error: memErr } = await sb.from("household_members")
+    .insert({ household_id: hh.id, user_id: currentUser.id, display_name: displayName });
+  if (memErr && !/duplicate|unique/i.test(memErr.message || "")) { hhSetupError(memErr.message); return; }
+  myDisplayName = displayName;
+  await loadMembership();
+  enterApp();
+  toast("You’re in 💛 Welcome to " + household.name + ".");
+});
+
+/* ================= Enter app ================= */
+function enterApp() {
+  showView("appView");
+  const me = myMember();
+  if (me && me.display_name) myDisplayName = me.display_name;
+  // If the signed-in person is one of the two, start on Ours (predictable default).
+  currentSpace = "Ours";
+  document.querySelectorAll("#spaceSwitcher button").forEach((b) => b.classList.toggle("active", b.dataset.space === "Ours"));
+  renderPrivateBanner();
+  renderHouseholdCard();
+  switchTab("today");
+  subscribeRealtime();
+}
+function renderHouseholdCard() {
+  if (!household) return;
+  $("hhName").textContent = household.name;
+  $("hhCode").textContent = household.invite_code || "······";
+  $("hhMembers").textContent = members.map((m) => m.display_name).filter(Boolean).join("  ·  ") || "Just you so far";
+}
+
+$("copyCodeBtn").addEventListener("click", async () => {
+  const code = household ? household.invite_code : "";
+  const fb = $("copyFeedback");
+  if (!code) return;
+  try {
+    await navigator.clipboard.writeText(code);
+    fb.textContent = "Copied ✓ Send it to your partner.";
+  } catch (e) {
+    fb.textContent = "Your code is " + code + " — long-press to copy it.";
+  }
+});
+
+async function doSignOut() {
+  if (realtimeChannel && sb) { try { await sb.removeChannel(realtimeChannel); } catch (e) {} realtimeChannel = null; }
+  if (sb) { try { await sb.auth.signOut(); } catch (e) {} }
+  currentUser = null; household = null; members = []; openList = null;
+  showView("authView");
+}
+$("signOutBtn").addEventListener("click", doSignOut);
+$("setupSignOutBtn").addEventListener("click", doSignOut);
+
+/* ================= Data fetching ================= */
+async function fetchSpaceTable(table, orderCol, ascending) {
+  if (!sb || !household) return [];
+  if (isPartnerSpace() || isUnknownPersonSpace()) return [];
+  let q = sb.from(table).select("*").eq("household_id", household.id);
+  q = applySpaceFilter(q);
+  if (orderCol) q = q.order(orderCol, { ascending: !!ascending });
+  const { data: rows, error } = await q;
+  if (error) { console.warn(table, error.message); return []; }
+  return rows || [];
+}
+
+async function refreshAll() {
+  if (!sb || !household || refreshing) return;
+  refreshing = true;
+  $("appLoading").classList.remove("hidden");
+  try {
+    const [expenses, lists, listItems, events, reminders, notes, goals, documents] = await Promise.all([
+      fetchSpaceTable("expenses", "expense_date", false),
+      fetchSpaceTable("lists", "created_at", false),
+      fetchSpaceTable("list_items", "created_at", true),
+      fetchSpaceTable("events", "event_date", true),
+      fetchSpaceTable("reminders", "due_date", true),
+      fetchSpaceTable("notes", "created_at", false),
+      fetchSpaceTable("goals", "created_at", false),
+      fetchSpaceTable("documents", "created_at", false),
+      fetchTodaySummary()
+    ]);
+    data.expenses = expenses; data.lists = lists; data.listItems = listItems;
+    data.events = events; data.reminders = reminders; data.notes = notes; data.goals = goals;
+    data.documents = documents;
+    renderAll();
+  } finally {
+    refreshing = false;
+    $("appLoading").classList.add("hidden");
+  }
+}
+
+async function fetchTodaySummary() {
+  if (!sb || !household) return;
+  const now = new Date();
+  const monthStart = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-01";
+  const [spendRes, remRes, goalRes, evRes, remPrevRes] = await Promise.all([
+    sb.from("expenses").select("amount").eq("household_id", household.id).eq("visibility", "shared").gte("expense_date", monthStart),
+    sb.from("reminders").select("id").eq("household_id", household.id).eq("done", false),
+    sb.from("goals").select("id").eq("household_id", household.id),
+    sb.from("events").select("*").eq("household_id", household.id).gte("event_date", todayISO()).order("event_date", { ascending: true }).limit(5),
+    sb.from("reminders").select("*").eq("household_id", household.id).eq("done", false).order("due_date", { ascending: true }).limit(5)
+  ]);
+  todayData.sharedMonthSpend = (spendRes.data || []).reduce((s, r) => s + (Number(r.amount) || 0), 0);
+  todayData.openReminders = (remRes.data || []).length;
+  todayData.activeGoals = (goalRes.data || []).length;
+  todayData.events = evRes.data || [];
+  todayData.reminders = remPrevRes.data || [];
+}
+
+/* ================= Realtime sync ================= */
+function subscribeRealtime() {
+  if (!sb || realtimeChannel) return;
+  const tables = ["expenses", "lists", "list_items", "events", "reminders", "notes", "goals", "documents", "households", "household_members"];
+  let channel = sb.channel("our-life-sync");
+  tables.forEach((t) => {
+    channel = channel.on("postgres_changes", { event: "*", schema: "public", table: t }, () => {
+      // A change on either phone: quietly refetch so both stay in step.
+      loadMembership().then(() => { renderHouseholdCard(); refreshAll(); });
+    });
+  });
+  realtimeChannel = channel.subscribe();
+}
+
+/* ================= Rendering ================= */
+function renderAll() {
+  renderPrivateBanner();
+  renderToday();
+  renderMoney();
+  renderLists();
+  renderPlans();
+  renderMore();
+}
+
+function renderToday() {
+  const name = myDisplayName || "there";
+  const first = String(name).split(" ")[0];
+  $("todayGreeting").textContent = "Hello, " + first + " 💛";
+  $("todayDate").textContent = new Date().toLocaleDateString("en-CA", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+
+  const start = new Date(); start.setHours(0, 0, 0, 0);
+  const target = new Date(WEDDING_DATE); target.setHours(0, 0, 0, 0);
+  const days = Math.round((target - start) / 86400000);
+  if (days > 0) { $("countdownDays").textContent = days; $("countdownLabel").textContent = days === 1 ? "day to go" : "days to go"; }
+  else if (days === 0) { $("countdownDays").textContent = "Today"; $("countdownLabel").textContent = "is the big day"; }
+  else { $("countdownDays").textContent = "💍"; $("countdownLabel").textContent = "married — congratulations!"; }
+
+  $("statSpending").textContent = "$" + Math.round(todayData.sharedMonthSpend).toLocaleString("en-CA");
+  $("statReminders").textContent = todayData.openReminders;
+  $("statGoals").textContent = todayData.activeGoals;
+
+  const evWrap = $("todayEvents");
+  if (!todayData.events.length) {
+    evWrap.innerHTML = '<p class="muted" style="margin:0;">Nothing planned yet. Add your first plan together in Plans.</p>';
+  } else {
+    evWrap.innerHTML = todayData.events.map((ev) =>
+      '<div class="preview-row"><div class="preview-date">' + dayBadge(ev.event_date) + '</div>' +
+      '<div class="preview-main"><div class="t">' + esc(ev.title) + '</div><div class="s">' +
+      esc(fmtDate(ev.event_date)) + (ev.event_time ? " · " + esc(fmtTime(ev.event_time)) : "") + "</div></div></div>"
+    ).join("");
+  }
+
+  const remWrap = $("todayReminders");
+  if (!todayData.reminders.length) {
+    remWrap.innerHTML = '<p class="muted" style="margin:0;">Nothing due. Enjoy the calm.</p>';
+  } else {
+    remWrap.innerHTML = todayData.reminders.map((r) =>
+      '<div class="preview-row"><div class="preview-date">' + dayBadge(r.due_date) + '</div>' +
+      '<div class="preview-main"><div class="t">' + esc(r.title) + '</div><div class="s">' +
+      esc(r.kind || "General") + " · due " + esc(fmtDateShort(r.due_date)) + "</div></div></div>"
+    ).join("");
+  }
+}
+
+function renderMoney() {
+  const now = new Date();
+  const ym = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0");
+  const monthExpenses = data.expenses.filter((x) => String(x.expense_date || "").startsWith(ym));
+  const total = monthExpenses.reduce((s, x) => s + (Number(x.amount) || 0), 0);
+  $("monthLabel").textContent = now.toLocaleDateString("en-CA", { month: "long", year: "numeric" }) + (currentSpace === "Ours" ? " · shared" : " · " + currentSpace);
+  $("monthTotal").textContent = money(total);
+  $("monthCount").textContent = monthExpenses.length ? monthExpenses.length + (monthExpenses.length === 1 ? " expense" : " expenses") + " this month" : "";
+
+  // Settle-up: only meaningful for the shared space.
+  const settle = $("settleCard");
+  if (currentSpace === "Ours" && data.expenses.length) {
+    settle.classList.remove("hidden");
+    let g = 0, d = 0;
+    data.expenses.forEach((x) => {
+      if (x.paid_by === "Guntaj") g += Number(x.amount) || 0;
+      else if (x.paid_by === "Deepika") d += Number(x.amount) || 0;
+    });
+    const all = g + d, half = all / 2;
+    let html = "<p style='margin:0 0 6px;'>Guntaj has paid <strong>" + money(g) + "</strong> · Deepika has paid <strong>" + money(d) + "</strong><br>Shared total " + money(all) + " — fair share is " + money(half) + " each.</p>";
+    if (Math.abs(g - d) < 0.005) html += "<p style='margin:0;'><strong>You’re all settled up 💛</strong></p>";
+    else if (g > d) html += "<p style='margin:0;'><strong>Deepika owes Guntaj " + money(g - half) + "</strong> to even things up.</p>";
+    else html += "<p style='margin:0;'><strong>Guntaj owes Deepika " + money(d - half) + "</strong> to even things up.</p>";
+    $("settleBody").innerHTML = html;
+  } else {
+    settle.classList.add("hidden");
+  }
+
+  const wrap = $("expenseList");
+  if (isPartnerSpace()) { wrap.innerHTML = emptyState("🔒", "Private to " + currentSpace + ". Their own expenses stay theirs alone."); return; }
+  if (isUnknownPersonSpace()) { wrap.innerHTML = emptyState("🌱", currentSpace + " hasn’t joined yet — their expenses will be private to them anyway."); return; }
+  if (!data.expenses.length) { wrap.innerHTML = emptyState("🧾", "No expenses here yet. Tap “+ Add expense” for the first one."); return; }
+  wrap.innerHTML = data.expenses.map((x) =>
+    '<div class="row-card"><div class="row-main"><div class="row-title">' + esc(x.title) + '</div>' +
+    '<div class="row-sub">' + esc(fmtDate(x.expense_date)) + " · paid by " + esc(x.paid_by || "—") + "</div></div>" +
+    '<div class="row-amount">' + money(x.amount) + "</div>" +
+    '<button class="icon-btn pressable" type="button" data-del-expense="' + x.id + '" aria-label="Delete expense">✕</button></div>'
+  ).join("");
+}
+
+function renderLists() {
+  const wrap = $("listsWrap");
+  const detail = $("listDetail");
+  const home = $("listsHome");
+  if (openList) {
+    home.classList.add("hidden");
+    detail.classList.remove("hidden");
+    renderListDetail();
+    return;
+  }
+  detail.classList.add("hidden");
+  home.classList.remove("hidden");
+
+  if (isPartnerSpace()) { wrap.innerHTML = emptyState("🔒", "Private to " + currentSpace + ". Their own lists stay theirs alone."); return; }
+  if (isUnknownPersonSpace()) { wrap.innerHTML = emptyState("🌱", currentSpace + " hasn’t joined yet."); return; }
+  if (!data.lists.length) { wrap.innerHTML = emptyState("🛒", "No lists yet. Start one — groceries, wedding shopping, anything."); return; }
+  wrap.innerHTML = data.lists.map((l) => {
+    const items = data.listItems.filter((i) => i.list_id === l.id);
+    const done = items.filter((i) => i.done).length;
+    const pct = items.length ? Math.round((done / items.length) * 100) : 0;
+    return '<div class="row-card list-card pressable" data-open-list="' + l.id + '"><div class="row-main">' +
+      '<div class="row-title">' + esc(l.title) + '</div>' +
+      '<div class="row-sub">' + (items.length ? done + " of " + items.length + " done" : "Empty list — tap to add items") + "</div>" +
+      '<div class="progress-track"><div class="progress-fill" style="width:' + pct + '%"></div></div></div>' +
+      '<div style="font-size:20px; color:var(--gold); flex:0 0 auto;">›</div></div>';
+  }).join("");
+}
+
+function renderListDetail() {
+  const l = openList;
+  const items = data.listItems.filter((i) => i.list_id === l.id);
+  const done = items.filter((i) => i.done).length;
+  $("detailTitle").textContent = l.title;
+  $("detailProgressLabel").textContent = items.length ? done + " of " + items.length + " done" : "No items yet — add the first one below.";
+  $("detailProgressFill").style.width = (items.length ? Math.round((done / items.length) * 100) : 0) + "%";
+  const wrap = $("detailItems");
+  if (!items.length) { wrap.innerHTML = emptyState("✨", "Nothing here yet. Add your first item above."); return; }
+  wrap.innerHTML = items.map((i) =>
+    '<div class="row-card"><button class="check-btn pressable' + (i.done ? " done" : "") + '" type="button" data-toggle-item="' + i.id + '" aria-label="Tick item">✓</button>' +
+    '<div class="row-main"><div class="row-title" style="' + (i.done ? "text-decoration:line-through; color:var(--ink-soft);" : "") + '">' + esc(i.title) + "</div></div>" +
+    '<button class="icon-btn pressable" type="button" data-del-item="' + i.id + '" aria-label="Delete item">✕</button></div>'
+  ).join("");
+}
+
+function renderPlans() {
+  const wrap = $("eventList");
+  if (isPartnerSpace()) { wrap.innerHTML = emptyState("🔒", "Private to " + currentSpace + ". Their own plans stay theirs alone."); return; }
+  if (isUnknownPersonSpace()) { wrap.innerHTML = emptyState("🌱", currentSpace + " hasn’t joined yet."); return; }
+  if (!data.events.length) { wrap.innerHTML = emptyState("🗓️", "No plans here yet. Add a date, a dinner, an appointment — anything coming up."); return; }
+  wrap.innerHTML = data.events.map((ev) =>
+    '<div class="timeline-item"><div class="row-card" style="margin-bottom:0;"><div class="row-main">' +
+    '<div class="row-title">' + esc(ev.title) + "</div>" +
+    '<div class="row-sub">' + esc(fmtDate(ev.event_date)) + (ev.event_time ? " · " + esc(fmtTime(ev.event_time)) : "") + (ev.note ? " · " + esc(ev.note) : "") + "</div></div>" +
+    '<button class="icon-btn pressable" type="button" data-del-event="' + ev.id + '" aria-label="Delete plan">✕</button></div></div>'
+  ).join("");
+}
+
+function renderMore() {
+  // Reminders
+  const remWrap = $("reminderList");
+  if (isPartnerSpace()) remWrap.innerHTML = emptyState("🔒", "Private to " + currentSpace + ".");
+  else if (isUnknownPersonSpace()) remWrap.innerHTML = emptyState("🌱", currentSpace + " hasn’t joined yet.");
+  else if (!data.reminders.length) remWrap.innerHTML = emptyState("⏰", "No reminders here. Bills, renewals, birthdays — park them here and stop carrying them in your head.");
+  else remWrap.innerHTML = data.reminders.map((r) =>
+    '<div class="row-card"><button class="check-btn pressable' + (r.done ? " done" : "") + '" type="button" data-toggle-reminder="' + r.id + '" aria-label="Mark done">✓</button>' +
+    '<div class="row-main"><div class="row-title" style="' + (r.done ? "text-decoration:line-through; color:var(--ink-soft);" : "") + '">' + esc(r.title) + "</div>" +
+    '<div class="row-sub"><span class="badge' + (r.done ? " badge-done" : "") + '">' + esc(r.kind || "General") + "</span>  due " + esc(fmtDate(r.due_date)) + "</div></div>" +
+    '<button class="icon-btn pressable" type="button" data-del-reminder="' + r.id + '" aria-label="Delete reminder">✕</button></div>'
+  ).join("");
+
+  // Notes
+  const noteWrap = $("noteList");
+  if (isPartnerSpace()) noteWrap.innerHTML = emptyState("🔒", "Private to " + currentSpace + ".");
+  else if (isUnknownPersonSpace()) noteWrap.innerHTML = emptyState("🌱", currentSpace + " hasn’t joined yet.");
+  else if (!data.notes.length) noteWrap.innerHTML = emptyState("📝", "No notes yet. Sizes, favourites, gift ideas, the small important things — they belong here.");
+  else noteWrap.innerHTML = data.notes.map((n) =>
+    '<div class="card"><div style="display:flex; gap:10px; align-items:flex-start;"><div style="flex:1; min-width:0;">' +
+    "<h3 style='font-size:18px;'>" + esc(n.title) + "</h3>" +
+    (n.body ? '<div class="note-body">' + esc(n.body) + "</div>" : "") +
+    '</div><button class="icon-btn pressable" type="button" data-del-note="' + n.id + '" aria-label="Delete note">✕</button></div></div>'
+  ).join("");
+
+  // Goals
+  const goalWrap = $("goalList");
+  if (isPartnerSpace()) goalWrap.innerHTML = emptyState("🔒", "Private to " + currentSpace + ".");
+  else if (isUnknownPersonSpace()) goalWrap.innerHTML = emptyState("🌱", currentSpace + " hasn’t joined yet.");
+  else if (!data.goals.length) goalWrap.innerHTML = emptyState("🌟", "No goals yet. A home, a trip, something you’re saving toward together — dream it, then track it.");
+  else goalWrap.innerHTML = data.goals.map((g) => {
+    const target = Number(g.target) || 0, saved = Number(g.saved) || 0;
+    const pct = target > 0 ? Math.min(100, Math.round((saved / target) * 100)) : 0;
+    return '<div class="card"><div style="display:flex; gap:10px; align-items:flex-start;"><div style="flex:1; min-width:0;">' +
+      "<h3 style='font-size:19px;'>" + esc(g.title) + "</h3>" +
+      '<div class="muted">' + money(saved) + " saved of " + money(target) + " · " + pct + "%</div>" +
+      '<div class="progress-track"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="goal-add-row"><input type="number" inputmode="decimal" min="0" step="0.01" placeholder="Add $…" id="goal-add-' + g.id + '">' +
+      '<button class="btn btn-gold btn-small pressable" type="button" data-add-saved="' + g.id + '">Add</button></div>' +
+      '</div><button class="icon-btn pressable" type="button" data-del-goal="' + g.id + '" aria-label="Delete goal">✕</button></div></div>';
+  }).join("");
+
+  // Documents
+  const docWrap = $("docList");
+  if (isPartnerSpace()) docWrap.innerHTML = emptyState("🔒", "Private to " + currentSpace + ".");
+  else if (isUnknownPersonSpace()) docWrap.innerHTML = emptyState("🌱", currentSpace + " hasn’t joined yet.");
+  else if (!data.documents.length) docWrap.innerHTML = emptyState("🗂️", "No documents yet. Passports, important papers, certificates — store them here so they're always with you both.");
+  else docWrap.innerHTML = data.documents.map((d) => {
+    const isImg = String(d.file_type || "").startsWith("image/");
+    const kb = Number(d.size_bytes) || 0;
+    const sizeTxt = kb >= 1048576 ? (kb / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(kb / 1024)) + " KB";
+    return '<div class="row-card"><div style="font-size:22px; line-height:1; padding:2px 2px 0;">' + (isImg ? "🖼️" : "📄") + "</div>" +
+      '<div class="row-main"><div class="row-title">' + esc(d.file_name) + "</div>" +
+      '<div class="row-sub">' + sizeTxt + " · " + esc(fmtDateShort(d.created_at)) + (d.uploaded_by ? " · by " + esc(d.uploaded_by) : "") + "</div></div>" +
+      '<button class="btn btn-gold btn-small pressable" type="button" data-open-doc="' + d.id + '">Open</button>' +
+      '<button class="icon-btn pressable" type="button" data-del-doc="' + d.id + '" aria-label="Delete document">✕</button></div>';
+  }).join("");
+}
+
+/* ================= Mutations ================= */
+function guardCreate() {
+  const space = newItemSpace();
+  if (!space) {
+    if (isPartnerSpace()) toast("This is " + currentSpace + "’s private space — only they can add here.");
+    else toast(currentSpace + " hasn’t joined yet — add this in Ours for now.");
+    return null;
+  }
+  return space;
+}
+async function insertRow(table, fields) {
+  const { error } = await sb.from(table).insert(fields);
+  if (error) { toast("Couldn’t save. " + (error.message || "Please try again.")); return false; }
+  return true;
+}
+async function deleteRow(table, id) {
+  const { error } = await sb.from(table).delete().eq("id", id);
+  if (error) { toast("Couldn’t delete. Please try again."); return false; }
+  return true;
+}
+
+/* ---- Expenses ---- */
+function toggleForm(id, force) {
+  const el = $(id);
+  const show = typeof force === "boolean" ? force : el.classList.contains("hidden");
+  el.classList.toggle("hidden", !show);
+  if (show) { el.classList.remove("form-in"); void el.offsetWidth; el.classList.add("form-in"); }
+}
+$("toggleExpenseForm").addEventListener("click", () => { toggleForm("expenseForm"); });
+$("toggleListForm").addEventListener("click", () => toggleForm("listForm"));
+$("toggleEventForm").addEventListener("click", () => toggleForm("eventForm"));
+$("toggleReminderForm").addEventListener("click", () => toggleForm("reminderForm"));
+$("toggleNoteForm").addEventListener("click", () => toggleForm("noteForm"));
+$("toggleGoalForm").addEventListener("click", () => toggleForm("goalForm"));
+$("toggleDocForm").addEventListener("click", () => toggleForm("docForm"));
+
+document.querySelectorAll("#paidByToggle button").forEach((b) => {
+  b.addEventListener("click", () => {
+    selectedPaidBy = b.dataset.name;
+    document.querySelectorAll("#paidByToggle button").forEach((x) => x.classList.toggle("active", x === b));
+  });
+});
+
+$("expenseForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const space = guardCreate(); if (!space) return;
+  const title = $("expTitle").value.trim();
+  const amount = parseFloat($("expAmount").value);
+  const date = $("expDate").value;
+  const errEl = $("expenseError");
+  if (!title || !(amount > 0) || !date) {
+    errEl.textContent = "Please add what it was, an amount, and a date.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+  errEl.classList.add("hidden");
+  const ok = await insertRow("expenses", {
+    household_id: household.id, visibility: space.visibility, owner_id: space.owner_id,
+    title, amount, expense_date: date, paid_by: selectedPaidBy
+  });
+  if (ok) {
+    e.target.reset();
+    $("expDate").value = todayISO();
+    toggleForm("expenseForm", false);
+    toast("Expense added ✓");
+    refreshAll();
+  }
+});
+
+/* ---- Lists ---- */
+$("listForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const space = guardCreate(); if (!space) return;
+  const title = $("listTitle").value.trim();
+  if (!title) return;
+  const ok = await insertRow("lists", {
+    household_id: household.id, visibility: space.visibility, owner_id: space.owner_id, title
+  });
+  if (ok) { e.target.reset(); toggleForm("listForm", false); toast("List created ✓"); refreshAll(); }
+});
+
+$("listItemForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!openList) return;
+  const title = $("listItemTitle").value.trim();
+  if (!title) return;
+  const ok = await insertRow("list_items", {
+    list_id: openList.id, household_id: household.id,
+    visibility: openList.visibility, owner_id: openList.owner_id, title, done: false
+  });
+  if (ok) { e.target.reset(); $("listItemTitle").focus(); refreshAll(); }
+});
+
+$("listBackBtn").addEventListener("click", () => { openList = null; renderLists(); });
+$("deleteListBtn").addEventListener("click", async () => {
+  if (!openList) return;
+  if (!window.confirm("Delete this list and all its items?")) return;
+  await sb.from("list_items").delete().eq("list_id", openList.id);
+  const ok = await deleteRow("lists", openList.id);
+  if (ok) { openList = null; toast("List deleted"); refreshAll(); }
+});
+
+/* ---- Events ---- */
+$("eventForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const space = guardCreate(); if (!space) return;
+  const title = $("evTitle").value.trim();
+  const date = $("evDate").value;
+  if (!title || !date) { toast("Please add a title and a date."); return; }
+  const ok = await insertRow("events", {
+    household_id: household.id, visibility: space.visibility, owner_id: space.owner_id,
+    title, event_date: date, event_time: $("evTime").value || null, note: $("evNote").value.trim() || null
+  });
+  if (ok) { e.target.reset(); toggleForm("eventForm", false); toast("Plan added ✓"); refreshAll(); }
+});
+
+/* ---- Reminders ---- */
+$("reminderForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const space = guardCreate(); if (!space) return;
+  const title = $("remTitle").value.trim();
+  const date = $("remDate").value;
+  if (!title || !date) { toast("Please add a reminder and a due date."); return; }
+  const ok = await insertRow("reminders", {
+    household_id: household.id, visibility: space.visibility, owner_id: space.owner_id,
+    title, due_date: date, kind: $("remKind").value, done: false
+  });
+  if (ok) { e.target.reset(); toggleForm("reminderForm", false); toast("Reminder set ✓"); refreshAll(); }
+});
+
+/* ---- Notes ---- */
+$("noteForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const space = guardCreate(); if (!space) return;
+  const title = $("noteTitle").value.trim();
+  if (!title) return;
+  const ok = await insertRow("notes", {
+    household_id: household.id, visibility: space.visibility, owner_id: space.owner_id,
+    title, body: $("noteBody").value.trim() || null
+  });
+  if (ok) { e.target.reset(); toggleForm("noteForm", false); toast("Note saved ✓"); refreshAll(); }
+});
+
+/* ---- Goals ---- */
+$("goalForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const space = guardCreate(); if (!space) return;
+  const title = $("goalTitle").value.trim();
+  const target = parseFloat($("goalTarget").value);
+  if (!title || !(target > 0)) { toast("Please add a goal and a target amount."); return; }
+  const ok = await insertRow("goals", {
+    household_id: household.id, visibility: space.visibility, owner_id: space.owner_id,
+    title, target, saved: 0
+  });
+  if (ok) { e.target.reset(); toggleForm("goalForm", false); toast("Goal added 🌟"); refreshAll(); }
+});
+
+/* ---- Documents (PDF & image uploads, Supabase Storage bucket "documents") ---- */
+$("docForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const space = guardCreate(); if (!space) return;
+  const input = $("docFile");
+  const file = input.files && input.files[0];
+  const errEl = $("docError");
+  const btn = $("docUploadBtn");
+  if (!file) { errEl.textContent = "Choose a file first."; return; }
+  const isPdf = file.type === "application/pdf";
+  const isImg = file.type.startsWith("image/");
+  if (!isPdf && !isImg) { errEl.textContent = "Only PDFs and images can be stored here."; return; }
+  if (file.size > 25 * 1024 * 1024) { errEl.textContent = "That file is over 25 MB — too big to store here."; return; }
+  errEl.textContent = "";
+  btn.disabled = true; btn.textContent = "Uploading…";
+  try {
+    const safeName = file.name.replace(/[^\w.\- ]+/g, "_").slice(-80) || "document";
+    const uid = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now());
+    const path = household.id + "/" + space.visibility + "/" + uid + "-" + safeName;
+    const up = await sb.storage.from("documents").upload(path, file, { contentType: file.type || "application/octet-stream", upsert: false });
+    if (up.error) { toast("Upload failed. " + (up.error.message || "Please try again.")); return; }
+    const ok = await insertRow("documents", {
+      household_id: household.id, visibility: space.visibility, owner_id: space.owner_id,
+      file_name: file.name, file_type: file.type, size_bytes: file.size,
+      storage_path: path, uploaded_by: myDisplayName || ""
+    });
+    if (!ok) { try { await sb.storage.from("documents").remove([path]); } catch (e2) {} return; }
+    e.target.reset();
+    toggleForm("docForm", false);
+    toast("Document stored 🗂️");
+    refreshAll();
+  } finally {
+    btn.disabled = false; btn.textContent = "Upload document";
+  }
+});
+async function openDocument(doc) {
+  const { data: signed, error } = await sb.storage.from("documents").createSignedUrl(doc.storage_path, 600);
+  if (error || !signed || !signed.signedUrl) { toast("Couldn’t open that document. Please try again."); return; }
+  window.open(signed.signedUrl, "_blank");
+}
+async function deleteDocument(doc) {
+  try { await sb.storage.from("documents").remove([doc.storage_path]); } catch (e) {}
+  if (await deleteRow("documents", doc.id)) { toast("Document deleted"); refreshAll(); }
+}
+
+/* ================= Delegated clicks (rows, nav, tabs) ================= */
+document.addEventListener("click", async (e) => {
+  const gotoBtn = e.target.closest("[data-goto]");
+  if (gotoBtn) { switchTab(gotoBtn.dataset.goto); return; }
+
+  const openBtn = e.target.closest("[data-open-list]");
+  if (openBtn) {
+    openList = data.lists.find((l) => String(l.id) === openBtn.dataset.openList) || null;
+    if (openList) renderLists();
+    return;
+  }
+  const delExp = e.target.closest("[data-del-expense]");
+  if (delExp) { if (await deleteRow("expenses", delExp.dataset.delExpense)) { toast("Expense deleted"); refreshAll(); } return; }
+  const delEv = e.target.closest("[data-del-event]");
+  if (delEv) { if (await deleteRow("events", delEv.dataset.delEvent)) { toast("Plan deleted"); refreshAll(); } return; }
+  const delRem = e.target.closest("[data-del-reminder]");
+  if (delRem) { if (await deleteRow("reminders", delRem.dataset.delReminder)) { toast("Reminder deleted"); refreshAll(); } return; }
+  const delNote = e.target.closest("[data-del-note]");
+  if (delNote) { if (await deleteRow("notes", delNote.dataset.delNote)) { toast("Note deleted"); refreshAll(); } return; }
+  const delGoal = e.target.closest("[data-del-goal]");
+  if (delGoal) { if (await deleteRow("goals", delGoal.dataset.delGoal)) { toast("Goal deleted"); refreshAll(); } return; }
+  const openDoc = e.target.closest("[data-open-doc]");
+  if (openDoc) { const d = data.documents.find((x) => String(x.id) === openDoc.dataset.openDoc); if (d) openDocument(d); return; }
+  const delDoc = e.target.closest("[data-del-doc]");
+  if (delDoc) { const d = data.documents.find((x) => String(x.id) === delDoc.dataset.delDoc); if (d) deleteDocument(d); return; }
+  const delItem = e.target.closest("[data-del-item]");
+  if (delItem) { if (await deleteRow("list_items", delItem.dataset.delItem)) refreshAll(); return; }
+
+  const togItem = e.target.closest("[data-toggle-item]");
+  if (togItem) {
+    const item = data.listItems.find((i) => String(i.id) === togItem.dataset.toggleItem);
+    if (item) { await sb.from("list_items").update({ done: !item.done }).eq("id", item.id); refreshAll(); }
+    return;
+  }
+  const togRem = e.target.closest("[data-toggle-reminder]");
+  if (togRem) {
+    const r = data.reminders.find((x) => String(x.id) === togRem.dataset.toggleReminder);
+    if (r) { await sb.from("reminders").update({ done: !r.done }).eq("id", r.id); refreshAll(); }
+    return;
+  }
+  const addSaved = e.target.closest("[data-add-saved]");
+  if (addSaved) {
+    const g = data.goals.find((x) => String(x.id) === addSaved.dataset.addSaved);
+    const input = $("goal-add-" + addSaved.dataset.addSaved);
+    const amt = input ? parseFloat(input.value) : NaN;
+    if (g && amt > 0) {
+      const { error } = await sb.from("goals").update({ saved: (Number(g.saved) || 0) + amt }).eq("id", g.id);
+      if (error) toast("Couldn’t add that. Please try again.");
+      else { toast("Added to your goal 💛"); refreshAll(); }
+    } else toast("Type an amount first, then tap Add.");
+    return;
+  }
+});
+
+// Coming back to the app (from another app or after the partner changed something):
+// quietly re-check membership and data, so joins and edits show without a manual reload.
+// iPhone home-screen apps resume from a frozen snapshot, so listen on every resume signal.
+let lastResumeCheck = 0;
+function onAppResume() {
+  const now = Date.now();
+  if (now - lastResumeCheck < 15000) return;
+  lastResumeCheck = now;
+  checkForUpdate();
+  if (sb && currentUser && household) {
+    loadMembership().then(() => { renderHouseholdCard(); refreshAll(); }).catch(() => {});
+  }
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden) onAppResume(); });
+window.addEventListener("pageshow", (e) => { if (e.persisted) onAppResume(); });
+window.addEventListener("focus", onAppResume);
+
+// Self-update: if the live site carries a newer build stamp, reload once into it.
+let updateCheckBusy = false;
+async function checkForUpdate() {
+  if (updateCheckBusy) return;
+  updateCheckBusy = true;
+  try {
+    const res = await fetch(window.location.href.split("#")[0], { cache: "no-store" });
+    if (!res.ok) return;
+    const text = await res.text();
+    const m = text.match(/APP_BUILD\s*=\s*"([^"]+)"/);
+    if (m && m[1] !== APP_BUILD) {
+      if (sessionStorage.getItem("twg-reloaded-for") === m[1]) return; // avoid a reload loop
+      sessionStorage.setItem("twg-reloaded-for", m[1]);
+      window.location.reload();
+    }
+  } catch (e) { /* offline or fetch blocked — try again next resume */ }
+  finally { updateCheckBusy = false; }
+}
+setTimeout(checkForUpdate, 2500);
+
+document.querySelectorAll("#bottomNav button").forEach((b) => {
+  b.addEventListener("click", () => switchTab(b.dataset.tab));
+});
+$("settingsBtn").addEventListener("click", () => switchTab("settings"));
+document.querySelectorAll("#spaceSwitcher button").forEach((b) => {
+  b.addEventListener("click", () => switchSpace(b.dataset.space));
+});
+
+/* ================= Boot ================= */
+function initDefaults() {
+  $("expDate").value = todayISO();
+  $("remDate").value = todayISO();
+  setAuthMode("signin");
+  if (!isConfigured) $("setupBanner").classList.remove("hidden");
+}
+initDefaults();
+
+if (sb) {
+  sb.auth.getSession().then(async ({ data: res }) => {
+    if (res && res.session && res.session.user) {
+      try { await afterSignIn(res.session.user); } catch (e) { showView("authView"); }
+    } else {
+      // One quiet retry — a saved session sometimes needs a moment to refresh on reopen.
+      setTimeout(async () => {
+        if (currentUser) return;
+        try {
+          const again = await sb.auth.getSession();
+          if (again && again.data && again.data.session && again.data.session.user) await afterSignIn(again.data.session.user);
+        } catch (e) {}
+      }, 900);
+    }
+  }).catch(() => {});
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === "SIGNED_OUT") {
+      currentUser = null; household = null; members = [];
+      showView("authView");
+    } else if ((event === "SIGNED_IN" || event === "INITIAL_SESSION" || event === "TOKEN_REFRESHED") && session && session.user && !currentUser) {
+      try { await afterSignIn(session.user); } catch (e) {}
+    }
+  });
+}
+</script>
+</body>
+</html>
